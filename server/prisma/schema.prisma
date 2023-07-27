@@ -6,3 +6,25 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model Patient {
+  id  String @id @db.VarChar(36)
+  birthDate DateTime @db.Date
+  email String @db.VarChar(255)
+  name String @db.VarChar(255)
+
+  address Address?
+}
+
+model Address {
+  id String @id @db.VarChar(36)
+  zipCode String @db.VarChar(8)
+  publicPlace String @db.VarChar(100)
+  number String @db.VarChar(6)
+  complement String @db.VarChar(100)
+  city String @db.VarChar(100)
+  country String @db.VarChar(100)
+
+  patientId String @db.VarChar(36) @unique
+  patient Patient @relation(fields: [patientId], references: [id])
+}

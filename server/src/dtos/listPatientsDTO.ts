@@ -1,4 +1,4 @@
-import { Patient } from '@prisma/client'
+import { Patient } from '../entities/Patient'
 
 export type ListPatientsRequest = {
   page: string | undefined

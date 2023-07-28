@@ -4,6 +4,7 @@ import { CreatePatientService } from '../services/CreatePatientService'
 import { ListPatientsService } from '../services/ListPatientsService'
 import { ListPatientsRequest } from '../dtos/listPatientsDTO'
 import { GetPatientByIdService } from '../services/GetPatientByIdService'
+import { DeletePatientService } from '../services/DeletePatientService'
 
 export class PatientController {
   async create(req: Request, res: Response): Promise<Response> {
@@ -54,6 +55,23 @@ export class PatientController {
         patientId,
       })
       return res.status(200).json(result)
+    } catch (e) {
+      console.log(e)
+      return res.status(400).json({
+        error: true,
+        message: String(e),
+      })
+    }
+  }
+
+  async delete(req: Request, res: Response): Promise<Response> {
+    try {
+      const { patientId } = req.params
+      const service = container.resolve(DeletePatientService)
+      await service.execute({
+        patientId,
+      })
+      return res.status(204).send()
     } catch (e) {
       console.log(e)
       return res.status(400).json({

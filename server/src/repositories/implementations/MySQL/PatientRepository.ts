@@ -31,6 +31,14 @@ export class PatientRepository implements IPatientRepository {
     })
   }
 
+  findByEmail(email: string): Promise<Patient | null> {
+    return prisma.patient.findFirst({
+      where: {
+        email: email,
+      },
+    })
+  }
+
   list(page: number, length: number, searchInput?: string): Promise<Patient[]> {
     return prisma.patient.findMany({
       where: {

@@ -7,6 +7,8 @@ export interface IPatientRepository {
 
   findByID(patientID: string): Promise<Patient | null>
 
+  findByEmail(email: string): Promise<Patient | null>
+
   list(page: number, length: number, input?: string): Promise<Patient[]>
 
   count(input?: string): Promise<number>

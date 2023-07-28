@@ -27,5 +27,5 @@ model Address {
   country String @db.VarChar(100)
 
   patientId String @db.VarChar(36) @unique
-  patient Patient @relation(fields: [patientId], references: [id])
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
 }

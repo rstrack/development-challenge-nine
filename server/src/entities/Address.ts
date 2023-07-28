@@ -5,8 +5,9 @@ export class Address {
   public zipCode: string
   public publicPlace: string
   public number: string
-  public complement: string
+  public complement: string | null
   public city: string
+  public state: string
   public country: string
   public patientId: string
 

@@ -21,8 +21,9 @@ model Address {
   zipCode String @db.VarChar(8)
   publicPlace String @db.VarChar(100)
   number String @db.VarChar(6)
-  complement String @db.VarChar(100)
+  complement String? @db.VarChar(100)
   city String @db.VarChar(100)
+  state String @db.VarChar(100)
   country String @db.VarChar(100)
 
   patientId String @db.VarChar(36) @unique

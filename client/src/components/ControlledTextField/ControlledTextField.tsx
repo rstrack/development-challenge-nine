@@ -40,6 +40,7 @@ const ControlledTextField = ({
       render={({ field: { value, onChange } }) => (
         <TextField
           {...rest}
+          fullWidth
           label={label}
           value={value || ''}
           onChange={(event) => onChange(event.target.value)}

@@ -59,6 +59,7 @@ const ControlledDatePicker = ({
               textField: {
                 error: getErrorMsg().hasError,
                 helperText: getErrorMsg().message,
+                fullWidth: true,
               },
             }}
             disablePast={disablePast}

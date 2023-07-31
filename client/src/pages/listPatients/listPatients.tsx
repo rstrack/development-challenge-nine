@@ -7,6 +7,8 @@ import {
   Pagination,
   Paper,
   Select,
+  Snackbar,
+  SnackbarContent,
   Table,
   TableBody,
   TableContainer,
@@ -21,6 +23,7 @@ import {
   PaginationDiv,
   SearchAndPageLengthDiv,
 } from './styles'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 type PatientFields = {
   id: string
@@ -35,6 +38,13 @@ const ListPatients = () => {
   const [searchInput, setSearchInput] = useState<string>('')
   const [patients, setPatients] = useState<PatientFields[]>([])
   const [patientsCount, setPatientsCount] = useState<number>(0)
+
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const [open, setOpen] = useState<boolean>(
+    location.state?.showSuccessSnackbar || false
+  )
 
   const getPatients = async () => {
     const result = await api.get(
@@ -79,7 +89,12 @@ const ListPatients = () => {
   return (
     <>
       <Typography variant="h4">Pacientes</Typography>
-      <Button variant="contained" startIcon={<Add />} sx={{ width: 196 }}>
+      <Button
+        variant="contained"
+        startIcon={<Add />}
+        sx={{ width: 196 }}
+        onClick={() => navigate('create')}
+      >
         Novo Paciente
       </Button>
       <SearchAndPageLengthDiv>
@@ -145,6 +160,13 @@ const ListPatients = () => {
           onChange={(_, page) => setPage(page)}
         />
       </PaginationDiv>
+      <Snackbar
+        open={open}
+        autoHideDuration={3000}
+        onClose={() => setOpen(false)}
+      >
+        <SnackbarContent message="Paciente cadastrado com sucesso!" />
+      </Snackbar>
     </>
   )
 }

@@ -24,6 +24,7 @@ import {
   SearchAndPageLengthDiv,
 } from './styles'
 import { useLocation, useNavigate } from 'react-router-dom'
+import ConfirmationDialog from '../../components/ConfirmationDialog/ConfirmationDialog'
 
 type PatientFields = {
   id: string
@@ -33,18 +34,19 @@ type PatientFields = {
 }
 
 const ListPatients = () => {
+  const navigate = useNavigate()
+  const location = useLocation()
+
   const [page, setPage] = useState(1)
   const [pageLength, setPageLength] = useState<number>(10)
   const [searchInput, setSearchInput] = useState<string>('')
   const [patients, setPatients] = useState<PatientFields[]>([])
   const [patientsCount, setPatientsCount] = useState<number>(0)
-
-  const navigate = useNavigate()
-  const location = useLocation()
-
-  const [open, setOpen] = useState<boolean>(
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
+  const [isSnackBarOpen, setIsSnackBarOpen] = useState<boolean>(
     location.state?.showSuccessSnackbar || false
   )
+  const [patientIdToDelete, setPatientIdToDelete] = useState<string | null>()
 
   const getPatients = async () => {
     const result = await api.get(
@@ -52,13 +54,6 @@ const ListPatients = () => {
     )
     setPatientsCount(result.data.count)
     setPatients(result.data.data)
-  }
-
-  const formatDate = (dateString: string) => {
-    const date = dateString.split('T')[0]
-    const [year, month, day] = date.split('-')
-    const formattedDate = `${day}/${month}/${year}`
-    return formattedDate
   }
 
   const handlePageLength = (value: number) => {
@@ -73,6 +68,32 @@ const ListPatients = () => {
     if (page * pageLength > patientsCount) {
       setPage(1)
     }
+  }
+
+  const handleDeleteClick = (patientId: string) => {
+    setPatientIdToDelete(patientId)
+    setIsDialogOpen(true)
+  }
+
+  const handleDelete = async () => {
+    try {
+      await api.delete(`patient/${patientIdToDelete}`)
+      setPatients(
+        patients.filter((patient) => patient.id !== patientIdToDelete)
+      )
+      setIsSnackBarOpen(true)
+      setPatientsCount(patientsCount - 1)
+      if (page * pageLength > patientsCount) {
+        setPage(page - 1)
+      }
+    } catch (e) {}
+  }
+
+  const formatDate = (dateString: string) => {
+    const date = dateString.split('T')[0]
+    const [year, month, day] = date.split('-')
+    const formattedDate = `${day}/${month}/${year}`
+    return formattedDate
   }
 
   useEffect(() => {
@@ -146,7 +167,9 @@ const ListPatients = () => {
                 </CustomTableCell>
                 <CustomTableCell>
                   <Button>Editar</Button>
-                  <Button>Excluir</Button>
+                  <Button onClick={() => handleDeleteClick(patient.id)}>
+                    Excluir
+                  </Button>
                 </CustomTableCell>
               </TableRow>
             ))}
@@ -161,12 +184,26 @@ const ListPatients = () => {
         />
       </PaginationDiv>
       <Snackbar
-        open={open}
+        open={isSnackBarOpen}
         autoHideDuration={3000}
-        onClose={() => setOpen(false)}
+        onClose={() => setIsSnackBarOpen(false)}
       >
-        <SnackbarContent message="Paciente cadastrado com sucesso!" />
+        <SnackbarContent
+          message={
+            patientIdToDelete
+              ? 'Paciente excluído com sucesso!'
+              : 'Paciente cadastrado com sucesso!'
+          }
+        />
       </Snackbar>
+      <ConfirmationDialog
+        title="Aviso"
+        open={isDialogOpen}
+        setOpen={setIsDialogOpen}
+        onConfirm={handleDelete}
+      >
+        <Typography>Tem certeza que deseja excluir este paciente?</Typography>
+      </ConfirmationDialog>
     </>
   )
 }

@@ -166,7 +166,9 @@ const ListPatients = () => {
                   {formatDate(patient.birthDate)}
                 </CustomTableCell>
                 <CustomTableCell>
-                  <Button>Editar</Button>
+                  <Button onClick={() => navigate(`edit/${patient.id}`)}>
+                    Editar
+                  </Button>
                   <Button onClick={() => handleDeleteClick(patient.id)}>
                     Excluir
                   </Button>

@@ -1,4 +1,8 @@
 import { useState, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { FieldValues, FormProvider, useForm, useWatch } from 'react-hook-form'
+import { add, isBefore, isValid } from 'date-fns'
+import axios from 'axios'
 import {
   Button,
   Divider,
@@ -7,43 +11,47 @@ import {
   SnackbarContent,
   Typography,
 } from '@mui/material'
-import { FormProvider, SubmitHandler, useForm, useWatch } from 'react-hook-form'
+import { CustomForm, CustomPaper } from './styles'
 import ControlledTextField from '../../components/ControlledTextField/ControlledTextField'
 import ControlledDatePicker from '../../components/ControlledDatePicker/ControlledDatePicker'
-import { add, isBefore, isValid } from 'date-fns'
-import { CustomForm, CustomPaper } from './styles'
 import { maxLengths } from '../../global/maxLenghts'
-import { api } from '../../services/axios'
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
 import { states } from '../../global/states'
-
-type PatientFormInput = {
-  birthDate: string
-  email: string
-  name: string
-  address: {
-    zipCode: string
-    publicPlace: string
-    number: string
-    complement: string
-    city: string
-    country: string
-  }
-}
+import { api } from '../../services/axios'
 
 const CreatePatient = () => {
+  const { id } = useParams()
+
   const [open, setOpen] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
-  const formMethods = useForm<PatientFormInput>()
+  const [addressId, setAddressId] = useState(null)
 
+  const formMethods = useForm()
   const navigate = useNavigate()
 
-  const onSubmit: SubmitHandler<PatientFormInput> = async (data) => {
+  const onSubmit = async (data: FieldValues) => {
     try {
-      const response = await api.post('/patient', data)
-      console.log(response.data)
-      navigate('/patients', { state: { showSuccessSnackbar: true } })
+      console.log(data)
+      if (id) {
+        await api.put(`/patient/${id}`, {
+          id,
+          birthDate: data.birthDate,
+          email: data.email,
+          name: data.name,
+          address: {
+            id: addressId,
+            patientId: id,
+            ...data.address,
+          },
+        })
+        navigate('/patients', {
+          state: { showSuccessSnackbar: true, update: true },
+        })
+      } else {
+        await api.post('/patient', data)
+        navigate('/patients', {
+          state: { showSuccessSnackbar: true, update: false },
+        })
+      }
     } catch (e: any) {
       console.log(e)
       setOpen(true)
@@ -57,6 +65,35 @@ const CreatePatient = () => {
   })
 
   useEffect(() => {
+    if (id) {
+      api.get(`patient/${id}`).then((response) => {
+        const dt = new Date(response.data.birthDate)
+        const utcDate = new Date(
+          dt.valueOf() + dt.getTimezoneOffset() * 60 * 1000
+        )
+        setAddressId(response.data.address.id)
+        formMethods.setValue('name', response.data.name)
+        formMethods.setValue('email', response.data.email)
+        formMethods.setValue('birthDate', utcDate)
+        formMethods.setValue('address.zipCode', response.data.address.zipCode)
+        formMethods.setValue(
+          'address.publicPlace',
+          response.data.address.publicPlace
+        )
+        formMethods.setValue('address.number', response.data.address.number)
+        formMethods.setValue(
+          'address.complement',
+          response.data.address.complement
+        )
+        formMethods.setValue('address.city', response.data.address.city)
+        // @ts-ignore
+        formMethods.setValue('address.state', response.data.address.state) // TS acusando erro devido ao nome 'state'
+        formMethods.setValue('address.country', response.data.address.country)
+      })
+    }
+  }, [])
+
+  useEffect(() => {
     if (/^[0-9]{8}/.test(zipCodeValue)) {
       axios
         .get(`https://viacep.com.br/ws/${zipCodeValue}/json/`)
@@ -65,7 +102,7 @@ const CreatePatient = () => {
           formMethods.setValue('address.publicPlace', response.data.logradouro)
           formMethods.setValue('address.city', response.data.localidade)
           // @ts-ignore
-          formMethods.setValue('address.state', states.get(response.data.uf)) // TS acusando erro devido ao nome 'state'
+          formMethods.setValue('address.state', states.get(response.data.uf))
           formMethods.setValue('address.country', 'Brasil')
         })
     }
@@ -73,7 +110,9 @@ const CreatePatient = () => {
 
   return (
     <CustomPaper>
-      <Typography variant="h4">Novo Paciente</Typography>
+      <Typography variant="h4">
+        {id ? 'Editar Paciente' : 'Novo Paciente'}
+      </Typography>
       <FormProvider {...formMethods}>
         <CustomForm onSubmit={formMethods.handleSubmit(onSubmit)}>
           <div>
@@ -275,7 +314,7 @@ const CreatePatient = () => {
         onClose={() => setOpen(false)}
       >
         <SnackbarContent
-          message={errorMsg.split(':', 2)[1]}
+          message={errorMsg}
           sx={{ backgroundColor: 'error.main' }}
         />
       </Snackbar>

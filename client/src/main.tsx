@@ -6,7 +6,7 @@ import { theme } from './global/theme'
 import Header from './components/Header/Header'
 import ListPatients from './pages/ListPatients/ListPatients'
 import { BaseDiv } from './pages/styles'
-import CreatePatient from './pages/CreatePatient/CreatePatient'
+import SavePatient from './pages/SavePatient/SavePatient'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -17,7 +17,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <BaseDiv>
             <Routes>
               <Route path="/patients" element={<ListPatients />} />
-              <Route path="/patients/create" element={<CreatePatient />} />
+              <Route path="/patients/create" element={<SavePatient />} />
+              <Route path="/patients/edit/:id" element={<SavePatient />} />
             </Routes>
           </BaseDiv>
         </BrowserRouter>

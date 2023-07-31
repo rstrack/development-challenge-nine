@@ -110,7 +110,7 @@ export class UpdatePatientService {
 
     const emailFound = await this.patientRepository.findByEmail(email)
 
-    if (emailFound?.id != id) {
+    if (emailFound && emailFound?.id != id) {
       throw Error('Email já registrado para outro paciente')
     }
 

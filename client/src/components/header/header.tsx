@@ -34,7 +34,7 @@ const Header = () => {
         <IconButton onClick={() => setOpen(true)} sx={{ mr: 2 }}>
           <Menu sx={{ color: 'white' }} />
         </IconButton>
-        <Link to="/">
+        <Link to="/home">
           <img src={MedcloudLogo} width="150" />
         </Link>
         <SwipeableDrawer

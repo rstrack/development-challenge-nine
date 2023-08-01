@@ -5,6 +5,7 @@ import { add, isBefore, isValid } from 'date-fns'
 import axios from 'axios'
 import {
   Button,
+  CircularProgress,
   Divider,
   Grid,
   Snackbar,
@@ -21,6 +22,7 @@ import { api } from '../../services/axios'
 const CreatePatient = () => {
   const { id } = useParams()
 
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [open, setOpen] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [addressId, setAddressId] = useState(null)
@@ -30,7 +32,7 @@ const CreatePatient = () => {
 
   const onSubmit = async (data: FieldValues) => {
     try {
-      console.log(data)
+      setIsLoading(true)
       if (id) {
         await api.put(`/patient/${id}`, {
           id,
@@ -55,7 +57,8 @@ const CreatePatient = () => {
     } catch (e: any) {
       console.log(e)
       setOpen(true)
-      setErrorMsg(e.response.data.message)
+      setErrorMsg(e.response?.data.message || 'Erro de conexão com o Servidor')
+      setIsLoading(false)
     }
   }
 
@@ -307,13 +310,14 @@ const CreatePatient = () => {
           <Button
             type="submit"
             variant="contained"
+            disabled={isLoading}
             sx={{
               width: 256,
               display: 'flex',
               alignSelf: 'center',
             }}
           >
-            Enviar
+            {isLoading ? <CircularProgress size={24} /> : 'Enviar'}
           </Button>
         </CustomForm>
       </FormProvider>
@@ -323,7 +327,7 @@ const CreatePatient = () => {
         onClose={() => setOpen(false)}
       >
         <SnackbarContent
-          message={errorMsg}
+          message={errorMsg.split(':')[1] || errorMsg}
           sx={{ backgroundColor: 'error.main' }}
         />
       </Snackbar>

@@ -3,6 +3,7 @@ import { api } from '../../services/axios'
 import {
   Button,
   InputAdornment,
+  LinearProgress,
   MenuItem,
   Pagination,
   Paper,
@@ -38,6 +39,8 @@ const ListPatients = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [errorMsg, setErrorMsg] = useState('')
   const [page, setPage] = useState(1)
   const [pageLength, setPageLength] = useState<number>(10)
   const [searchInput, setSearchInput] = useState<string>('')
@@ -50,11 +53,19 @@ const ListPatients = () => {
   const [patientIdToDelete, setPatientIdToDelete] = useState<string | null>()
 
   const getPatients = async () => {
-    const result = await api.get(
-      `patients?page=${page - 1}&length=${pageLength}&input=${searchInput}`
-    )
-    setPatientsCount(result.data.count)
-    setPatients(result.data.data)
+    try {
+      setIsLoading(true)
+      const result = await api.get(
+        `patients?page=${page - 1}&length=${pageLength}&input=${searchInput}`
+      )
+      setPatientsCount(result.data.count)
+      setPatients(result.data.data)
+      setIsLoading(false)
+    } catch (e: any) {
+      setErrorMsg(e.response?.data.message || 'Erro de conexão com o Servidor')
+      setIsSnackBarOpen(true)
+      setIsLoading(false)
+    }
   }
 
   const handlePageLength = (value: number) => {
@@ -78,6 +89,7 @@ const ListPatients = () => {
 
   const handleDelete = async () => {
     try {
+      setIsLoading(true)
       await api.delete(`patient/${patientIdToDelete}`)
       setPatients(
         patients.filter((patient) => patient.id !== patientIdToDelete)
@@ -87,7 +99,12 @@ const ListPatients = () => {
       if (page * pageLength > patientsCount) {
         setPage(page - 1)
       }
-    } catch (e) {}
+      setIsLoading(false)
+    } catch (e: any) {
+      setErrorMsg(e.response.data.message || 'Erro de conexão com o servidor')
+      setIsSnackBarOpen(true)
+      setIsLoading(false)
+    }
   }
 
   const formatDate = (dateString: string) => {
@@ -180,6 +197,7 @@ const ListPatients = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      {isLoading && <LinearProgress />}
       <PaginationDiv>
         <Pagination
           count={Math.ceil(patientsCount / pageLength)}
@@ -194,8 +212,12 @@ const ListPatients = () => {
       >
         <SnackbarContent
           message={
-            patientIdToDelete
+            errorMsg != ''
+              ? errorMsg.split(':')[1] || errorMsg
+              : patientIdToDelete
               ? 'Paciente excluído com sucesso!'
+              : location.state?.update
+              ? 'Paciente editado com sucesso!'
               : 'Paciente cadastrado com sucesso!'
           }
         />

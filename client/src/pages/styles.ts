@@ -2,7 +2,7 @@ import { styled } from '@mui/material'
 
 export const BaseDiv = styled('div')(({ theme }) => ({
   [theme.breakpoints.down('lg')]: {
-    margin: '32px auto',
+    margin: '32px 32px',
   },
   [theme.breakpoints.up('lg')]: {
     margin: '32px 20%',

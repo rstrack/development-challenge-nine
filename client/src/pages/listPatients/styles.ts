@@ -1,9 +1,18 @@
-import { TableCell, styled } from '@mui/material'
+import { TableCell, styled, tableCellClasses } from '@mui/material'
 
 export const CustomTableCell = styled(TableCell)({
-  overflow: 'hidden',
-  whiteSpace: 'nowrap',
-  textOverflow: 'ellipsis',
+  [`&.${tableCellClasses.head}`]: {
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    padding: '16px 32px',
+  },
+  [`&.${tableCellClasses.body}`]: {
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    padding: '12px 32px',
+  },
 })
 
 export const PaginationDiv = styled('div')({

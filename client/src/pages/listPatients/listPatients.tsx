@@ -25,6 +25,7 @@ import {
 } from './styles'
 import { useLocation, useNavigate } from 'react-router-dom'
 import ConfirmationDialog from '../../components/ConfirmationDialog/ConfirmationDialog'
+import { CustomPaper } from '../SavePatient/styles'
 
 type PatientFields = {
   id: string
@@ -108,7 +109,7 @@ const ListPatients = () => {
   }, [searchInput])
 
   return (
-    <>
+    <CustomPaper>
       <Typography variant="h4">Pacientes</Typography>
       <Button
         variant="contained"
@@ -122,6 +123,7 @@ const ListPatients = () => {
         <TextField
           label="Buscar"
           size="small"
+          variant="outlined"
           sx={{ flexGrow: 1 }}
           InputProps={{
             startAdornment: (
@@ -206,7 +208,7 @@ const ListPatients = () => {
       >
         <Typography>Tem certeza que deseja excluir este paciente?</Typography>
       </ConfirmationDialog>
-    </>
+    </CustomPaper>
   )
 }
 

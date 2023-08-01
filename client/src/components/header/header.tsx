@@ -2,10 +2,12 @@ import { useState } from 'react'
 
 import { Link, useNavigate } from 'react-router-dom'
 
-import MedcloudLogo from '../../assets/medcloud-white.png'
+import MedcloudLogoWhite from '../../assets/medcloud-white.png'
+import MedcloudLogoSvg from '../../assets/medcloud.svg'
 
 import {
   AppBar,
+  Divider,
   IconButton,
   List,
   ListItem,
@@ -35,7 +37,7 @@ const Header = () => {
           <Menu sx={{ color: 'white' }} />
         </IconButton>
         <Link to="/home">
-          <img src={MedcloudLogo} width="150" />
+          <img src={MedcloudLogoWhite} width="150" />
         </Link>
         <SwipeableDrawer
           open={open}
@@ -48,6 +50,16 @@ const Header = () => {
           }}
         >
           <List>
+            <ListItem
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginBottom: '8px',
+              }}
+            >
+              <img src={MedcloudLogoSvg} width="200" />
+            </ListItem>
+            <Divider />
             <ListItem>
               <CustomListItemButton
                 onClick={() => handleMenuClick('/patients')}

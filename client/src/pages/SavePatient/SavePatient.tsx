@@ -124,6 +124,7 @@ const CreatePatient = () => {
               <ControlledTextField
                 name="name"
                 label="Nome"
+                required
                 rules={{
                   required: {
                     value: true,
@@ -140,6 +141,7 @@ const CreatePatient = () => {
               <ControlledTextField
                 name="email"
                 label="Email"
+                required
                 rules={{
                   required: {
                     value: true,
@@ -160,6 +162,7 @@ const CreatePatient = () => {
               <ControlledDatePicker
                 name="birthDate"
                 label="Data de Nascimento"
+                required
                 rules={{
                   required: {
                     value: true,
@@ -190,6 +193,7 @@ const CreatePatient = () => {
               <ControlledTextField
                 name="address.zipCode"
                 label="CEP"
+                required
                 rules={{
                   required: {
                     value: true,
@@ -206,6 +210,7 @@ const CreatePatient = () => {
               <ControlledTextField
                 name="address.publicPlace"
                 label="Logradouro"
+                required
                 rules={{
                   required: {
                     value: true,
@@ -222,6 +227,7 @@ const CreatePatient = () => {
               <ControlledTextField
                 name="address.number"
                 label="Número"
+                required
                 rules={{
                   required: {
                     value: true,
@@ -250,6 +256,7 @@ const CreatePatient = () => {
               <ControlledTextField
                 name="address.city"
                 label="Cidade"
+                required
                 rules={{
                   required: {
                     value: true,
@@ -266,6 +273,7 @@ const CreatePatient = () => {
               <ControlledTextField
                 name="address.state"
                 label="Estado"
+                required
                 rules={{
                   required: {
                     value: true,
@@ -282,6 +290,7 @@ const CreatePatient = () => {
               <ControlledTextField
                 name="address.country"
                 label="País"
+                required
                 rules={{
                   required: {
                     value: true,

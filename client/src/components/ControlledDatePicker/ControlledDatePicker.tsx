@@ -12,6 +12,7 @@ type ControlledDatePickerProps = {
   name: string
   label: string
   defaultValue?: number | string
+  required?: boolean
   rules?: Omit<
     RegisterOptions<FieldValues, FieldPath<FieldValues>>,
     'valueAsNumber' | 'valueAsDate' | 'setValueAs' | 'disabled'
@@ -26,6 +27,7 @@ const ControlledDatePicker = ({
   name,
   label,
   defaultValue,
+  required,
   rules,
   disablePast,
   disableFuture,
@@ -60,6 +62,7 @@ const ControlledDatePicker = ({
                 error: getErrorMsg().hasError,
                 helperText: getErrorMsg().message,
                 fullWidth: true,
+                required: required,
               },
             }}
             disablePast={disablePast}

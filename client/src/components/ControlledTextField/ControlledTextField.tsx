@@ -11,6 +11,7 @@ type ControlledTextFieldProps = {
   name: string
   label: string
   defaultValue?: number | string
+  required?: boolean
   rules?: Omit<
     RegisterOptions<FieldValues, FieldPath<FieldValues>>,
     'valueAsNumber' | 'valueAsDate' | 'setValueAs' | 'disabled'
@@ -21,6 +22,7 @@ const ControlledTextField = ({
   name,
   label,
   defaultValue,
+  required,
   rules,
   ...rest
 }: ControlledTextFieldProps) => {
@@ -41,6 +43,7 @@ const ControlledTextField = ({
         <TextField
           {...rest}
           fullWidth
+          required={required}
           label={label}
           value={value || ''}
           onChange={(event) => onChange(event.target.value)}

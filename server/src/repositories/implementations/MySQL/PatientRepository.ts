@@ -49,6 +49,21 @@ export class PatientRepository implements IPatientRepository {
             ]
           : undefined,
       },
+      select: {
+        id: true,
+        name: true,
+        birthDate: true,
+        email: true,
+        address: {
+          select: {
+            zipCode: true,
+            publicPlace: true,
+            number: true,
+            city: true,
+            state: true,
+          },
+        },
+      },
       take: length,
       skip: page * length,
       orderBy: {

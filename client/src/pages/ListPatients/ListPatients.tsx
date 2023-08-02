@@ -81,14 +81,14 @@ const ListPatients = () => {
 
   const handlePageLength = (value: number) => {
     setPageLength(value)
-    if (page * value > patientsCount) {
+    if (patientsCount < (page - 1) * value) {
       setPage(1)
     }
   }
 
   const handleSearch = (value: string) => {
     setSearchInput(value)
-    if (page * pageLength > patientsCount) {
+    if (patientsCount < (page - 1) * pageLength) {
       setPage(1)
     }
   }
@@ -102,12 +102,9 @@ const ListPatients = () => {
     try {
       setIsLoading(true)
       await api.delete(`patient/${patientIdToDelete}`)
-      setPatients(
-        patients.filter((patient) => patient.id !== patientIdToDelete)
-      )
       setIsSnackBarOpen(true)
-      setPatientsCount(patientsCount - 1)
-      if (page * pageLength > patientsCount) {
+      getPatients()
+      if (patientsCount - 1 < (page - 1) * pageLength) {
         setPage(page - 1)
       }
       setIsLoading(false)

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { api } from '../../services/axios'
 import {
   Button,
+  Grid,
   InputAdornment,
   LinearProgress,
   MenuItem,
@@ -20,6 +21,8 @@ import {
 } from '@mui/material'
 import { Add, Search } from '@mui/icons-material'
 import {
+  CustomBox,
+  CustomDivider,
   CustomTableCell,
   PaginationDiv,
   SearchAndPageLengthDiv,
@@ -27,12 +30,20 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom'
 import ConfirmationDialog from '../../components/ConfirmationDialog/ConfirmationDialog'
 import { CustomPaper } from '../SavePatient/styles'
+import ExpandableRow from '../../components/ExpandableRow/ExpandableRow'
 
 type PatientFields = {
   id: string
   name: string
   email: string
   birthDate: string
+  address: {
+    zipCode: string
+    publicPlace: string
+    number: string
+    city: string
+    state: string
+  }
 }
 
 const ListPatients = () => {
@@ -167,32 +178,55 @@ const ListPatients = () => {
         </Select>
       </SearchAndPageLengthDiv>
       <TableContainer component={Paper}>
-        <Table sx={{ tableLayout: 'fixed', flexGrow: '1' }}>
+        <Table>
           <TableHead>
             <TableRow>
+              <CustomTableCell />
               <CustomTableCell>Nome</CustomTableCell>
               <CustomTableCell>Email</CustomTableCell>
               <CustomTableCell>Data de Nascimento</CustomTableCell>
-              <CustomTableCell width="256px">Opções</CustomTableCell>
+              <CustomTableCell>Opções</CustomTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {patients.map((patient, index) => (
-              <TableRow hover key={index}>
-                <CustomTableCell>{patient.name}</CustomTableCell>
-                <CustomTableCell>{patient.email}</CustomTableCell>
-                <CustomTableCell>
-                  {formatDate(patient.birthDate)}
-                </CustomTableCell>
-                <CustomTableCell>
-                  <Button onClick={() => navigate(`edit/${patient.id}`)}>
-                    Editar
-                  </Button>
-                  <Button onClick={() => handleDeleteClick(patient.id)}>
-                    Excluir
-                  </Button>
-                </CustomTableCell>
-              </TableRow>
+              <ExpandableRow
+                key={index}
+                items={[
+                  patient.name,
+                  patient.email,
+                  formatDate(patient.birthDate),
+                  <>
+                    <Button onClick={() => navigate(`edit/${patient.id}`)}>
+                      Editar
+                    </Button>
+                    <Button onClick={() => handleDeleteClick(patient.id)}>
+                      Excluir
+                    </Button>
+                  </>,
+                ]}
+              >
+                <CustomBox>
+                  <Typography variant="subtitle2">Endereço</Typography>
+                  <CustomDivider />
+                  <Grid container spacing="8px">
+                    <Grid item xs={12} md={6}>
+                      <b>CEP</b>: {patient.address.zipCode}
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <b>Cidade</b>: {patient.address.city}
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <b>Logradouro</b>:{' '}
+                      {`${patient.address.publicPlace} 
+                      nº ${patient.address.number}`}
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <b>Estado</b>: {patient.address.state}
+                    </Grid>
+                  </Grid>
+                </CustomBox>
+              </ExpandableRow>
             ))}
           </TableBody>
         </Table>

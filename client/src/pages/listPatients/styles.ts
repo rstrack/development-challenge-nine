@@ -1,12 +1,20 @@
-import { TableCell, styled, tableCellClasses } from '@mui/material'
+import {
+  Box,
+  Divider,
+  TableCell,
+  styled,
+  tableCellClasses,
+} from '@mui/material'
+
+export const CustomBox = styled(Box)({
+  margin: ' 16px 8px',
+})
+
+export const CustomDivider = styled(Divider)({
+  marginBottom: '16px',
+})
 
 export const CustomTableCell = styled(TableCell)({
-  [`&.${tableCellClasses.head}`]: {
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-    padding: '16px 32px',
-  },
   [`&.${tableCellClasses.body}`]: {
     overflow: 'hidden',
     whiteSpace: 'nowrap',

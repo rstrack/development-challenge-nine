@@ -43,13 +43,22 @@ const CreatePatient = () => {
             id: addressId,
             patientId: id,
             ...data.address,
+            zipCode: data.address.zipCode.replace('-', ''),
           },
         })
         navigate('/patients', {
           state: { showSuccessSnackbar: true, update: true },
         })
       } else {
-        await api.post('/patient', data)
+        await api.post('/patient', {
+          birthDate: data.birthDate,
+          email: data.email,
+          name: data.name,
+          address: {
+            ...data.address,
+            zipCode: data.address.zipCode.replace('-', ''),
+          },
+        })
         navigate('/patients', {
           state: { showSuccessSnackbar: true, update: false },
         })
@@ -97,9 +106,9 @@ const CreatePatient = () => {
   }, [])
 
   useEffect(() => {
-    if (/^[0-9]{8}/.test(zipCodeValue)) {
+    if (/^[0-9]{5}-?[0-9]{3}/.test(zipCodeValue)) {
       axios
-        .get(`https://viacep.com.br/ws/${zipCodeValue}/json/`)
+        .get(`https://viacep.com.br/ws/${zipCodeValue.replace('-', '')}/json/`)
         .then((response) => {
           console.log(response.data)
           formMethods.setValue('address.publicPlace', response.data.logradouro)
@@ -203,7 +212,7 @@ const CreatePatient = () => {
                     message: 'Campo obrigatório',
                   },
                   pattern: {
-                    value: /^[0-9]{8}/,
+                    value: /^[0-9]{5}-?[0-9]{3}/,
                     message: 'CEP inválido',
                   },
                 }}

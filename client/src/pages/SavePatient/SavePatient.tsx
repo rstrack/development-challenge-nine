@@ -12,12 +12,13 @@ import {
   SnackbarContent,
   Typography,
 } from '@mui/material'
-import { CustomForm, CustomPaper } from './styles'
+import { CustomForm } from './styles'
 import ControlledTextField from '../../components/ControlledTextField/ControlledTextField'
 import ControlledDatePicker from '../../components/ControlledDatePicker/ControlledDatePicker'
 import { maxLengths } from '../../global/maxLenghts'
 import { states } from '../../global/states'
 import { api } from '../../services/axios'
+import { CustomPaper } from '../styles'
 
 const CreatePatient = () => {
   const { id } = useParams()

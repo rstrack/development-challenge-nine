@@ -25,12 +25,11 @@ import {
   CustomDivider,
   CustomTableCell,
   PaginationDiv,
-  SearchAndPageLengthDiv,
 } from './styles'
 import { useLocation, useNavigate } from 'react-router-dom'
 import ConfirmationDialog from '../../components/ConfirmationDialog/ConfirmationDialog'
-import { CustomPaper } from '../SavePatient/styles'
 import ExpandableRow from '../../components/ExpandableRow/ExpandableRow'
+import { CustomPaper } from '../styles'
 
 type PatientFields = {
   id: string
@@ -139,41 +138,45 @@ const ListPatients = () => {
       <Button
         variant="contained"
         startIcon={<Add />}
-        sx={{ width: 196 }}
+        sx={{ width: 196, marginBottom: '16px' }}
         onClick={() => navigate('create')}
       >
         Novo Paciente
       </Button>
-      <SearchAndPageLengthDiv>
-        <TextField
-          label="Buscar"
-          size="small"
-          variant="outlined"
-          sx={{ flexGrow: 1 }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Search />
-              </InputAdornment>
-            ),
-          }}
-          value={searchInput}
-          onChange={(e) => {
-            handleSearch(e.target.value)
-          }}
-        />
-        <Select
-          onChange={(e) => handlePageLength(e.target.value as number)}
-          size="small"
-          sx={{ width: 256 }}
-          name="paginationSize"
-          defaultValue={10}
-        >
-          <MenuItem value={5}>5 itens por página</MenuItem>
-          <MenuItem value={10}>10 itens por página</MenuItem>
-          <MenuItem value={20}>20 itens por página</MenuItem>
-        </Select>
-      </SearchAndPageLengthDiv>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={9}>
+          <TextField
+            label="Buscar"
+            size="small"
+            variant="outlined"
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+            }}
+            value={searchInput}
+            onChange={(e) => {
+              handleSearch(e.target.value)
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <Select
+            onChange={(e) => handlePageLength(e.target.value as number)}
+            size="small"
+            fullWidth
+            name="paginationSize"
+            defaultValue={10}
+          >
+            <MenuItem value={5}>5 itens por página</MenuItem>
+            <MenuItem value={10}>10 itens por página</MenuItem>
+            <MenuItem value={20}>20 itens por página</MenuItem>
+          </Select>
+        </Grid>
+      </Grid>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>

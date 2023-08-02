@@ -27,9 +27,3 @@ export const PaginationDiv = styled('div')({
   display: 'flex',
   justifyContent: 'center',
 })
-
-export const SearchAndPageLengthDiv = styled('div')({
-  display: 'flex',
-  flexDirection: 'row',
-  gap: '32px',
-})
